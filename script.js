@@ -1,7 +1,7 @@
 // 配置参数
 const CONFIG = {
-    // Cloudflare Worker API地址
-    API_URL: 'https://baidupcspay.cursorflow.top',
+    // 易支付接口地址（直接使用易支付而不是Cloudflare Workers）
+    API_URL: 'https://e.heiyu.cc',
     // 支付成功后的跳转地址
     RETURN_URL: 'https://gizgy.github.io/BaiduPCSpayment-page/?success=true',
     // WebSocket 连接检查间隔 (毫秒)
@@ -13,7 +13,9 @@ const CONFIG = {
     // 商户ID
     PID: '1432',
     // 商户密钥
-    KEY: 'Kxp7Ja035aOtY2GKvlDvqjZj22AMiBfw'
+    KEY: 'Kxp7Ja035aOtY2GKvlDvqjZj22AMiBfw',
+    // WebSocket服务器地址
+    WS_URL: 'wss://baidupcspay.cursorflow.top/ws'
 };
 
 // 全局变量
@@ -137,7 +139,7 @@ function connectWebSocket() {
     
     try {
         // 创建WebSocket连接
-        webSocket = new WebSocket(`${getWebSocketUrl()}?machineId=${machineId}`);
+        webSocket = new WebSocket(`${CONFIG.WS_URL}?machineId=${machineId}`);
         
         // 连接打开事件
         webSocket.addEventListener('open', () => {
@@ -278,7 +280,7 @@ async function createOrder() {
             pid: CONFIG.PID,                 // 商户ID
             type: 'alipay',                  // 支付类型，指定为支付宝
             out_trade_no: orderNo,           // 商户订单号
-            notify_url: CONFIG.RETURN_URL,   // 异步通知地址
+            notify_url: `${CONFIG.WS_URL.replace('wss://', 'https://').replace('/ws', '')}/notify`, // 异步通知地址
             return_url: CONFIG.RETURN_URL,   // 同步跳转地址
             name: `百度上传助手${currentPlan}订阅`, // 商品名称
             money: amount.toFixed(2),        // 金额，保留两位小数
@@ -295,6 +297,8 @@ async function createOrder() {
         
         // 构建完整支付URL - 使用submit.php接口
         const payUrl = `${CONFIG.API_URL}/submit.php?${new URLSearchParams(params).toString()}`;
+        
+        console.log('支付URL:', payUrl);
         
         // 打开支付页面
         window.location.href = payUrl;
@@ -496,10 +500,4 @@ function formatDate(date) {
         month: 'long',
         day: 'numeric'
     });
-}
-
-// 获取WebSocket URL
-function getWebSocketUrl() {
-    // 将HTTP(S)转换为WS(S)
-    return CONFIG.API_URL.replace(/^http/, 'ws');
 } 
