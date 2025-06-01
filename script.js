@@ -1,7 +1,7 @@
 // 配置参数
 const CONFIG = {
-    // 易支付接口地址
-    API_URL: 'https://e.heiyu.cc',
+    // Cloudflare Worker API地址
+    API_URL: 'https://baidupcspay.cursorflow.top',
     // 支付成功后的跳转地址
     RETURN_URL: 'https://gizgy.github.io/BaiduPCSpayment-page/?success=true',
     // WebSocket 连接检查间隔 (毫秒)
