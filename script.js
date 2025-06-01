@@ -3,7 +3,7 @@ const CONFIG = {
     // Cloudflare Worker API地址
     API_URL: 'https://baidupcspay.cursorflow.top',
     // 支付成功后的跳转地址
-    RETURN_URL: window.location.href.split('?')[0] + '?success=true',
+    RETURN_URL: 'https://gizgy.github.io/BaiduPCSpayment-page/?success=true',
     // WebSocket 连接检查间隔 (毫秒)
     WS_CHECK_INTERVAL: 5000,
     // 订单状态检查间隔 (毫秒)
