@@ -1,7 +1,7 @@
 // 配置参数
 const CONFIG = {
-    // Cloudflare Worker API地址
-    API_URL: 'https://baidupcspay.cursorflow.top',
+    // 易支付接口地址
+    API_URL: 'https://e.heiyu.cc',
     // 支付成功后的跳转地址
     RETURN_URL: 'https://gizgy.github.io/BaiduPCSpayment-page/?success=true',
     // WebSocket 连接检查间隔 (毫秒)
@@ -10,6 +10,10 @@ const CONFIG = {
     ORDER_CHECK_INTERVAL: 3000,
     // 订单状态检查超时 (毫秒)
     ORDER_CHECK_TIMEOUT: 300000, // 5分钟
+    // 商户ID
+    PID: '1432',
+    // 商户密钥
+    KEY: 'Kxp7Ja035aOtY2GKvlDvqjZj22AMiBfw'
 };
 
 // 全局变量
@@ -63,6 +67,11 @@ async function init() {
         return;
     }
     
+    // 添加测试计划（仅在开发环境使用）
+    if (urlParams.get('test') === 'true') {
+        addTestPlan();
+    }
+    
     // 连接WebSocket
     connectWebSocket();
     
@@ -81,6 +90,40 @@ async function init() {
     
     // 设置支付按钮事件
     elements.confirmPayBtn.addEventListener('click', createOrder);
+}
+
+// 添加测试计划
+function addTestPlan() {
+    const plansContainer = document.querySelector('.subscription-plans');
+    
+    // 创建测试计划元素
+    const testPlanElement = document.createElement('div');
+    testPlanElement.className = 'plan test-plan';
+    testPlanElement.setAttribute('data-plan', 'test');
+    
+    testPlanElement.innerHTML = `
+        <div class="plan-header">
+            <h3>测试订阅</h3>
+            <div class="price">¥0.1</div>
+        </div>
+        <div class="plan-features">
+            <ul>
+                <li><i class="fas fa-check"></i> 有效期1天</li>
+                <li><i class="fas fa-check"></i> 测试功能</li>
+                <li><i class="fas fa-check"></i> 仅用于测试</li>
+            </ul>
+        </div>
+        <button class="select-plan-btn" data-plan="test">选择</button>
+    `;
+    
+    // 添加到计划容器
+    plansContainer.appendChild(testPlanElement);
+    
+    // 更新按钮事件
+    const newBtn = testPlanElement.querySelector('.select-plan-btn');
+    newBtn.addEventListener('click', () => {
+        selectPlan('test');
+    });
 }
 
 // 连接WebSocket
@@ -224,44 +267,124 @@ async function createOrder() {
     elements.loadingText.textContent = '正在创建支付订单...';
     
     try {
-        // 准备订单数据
-        const orderData = {
-            plan: currentPlan,
-            machineId: machineId,
-            returnUrl: CONFIG.RETURN_URL
+        // 生成订单号
+        const orderNo = generateOrderNo();
+        
+        // 获取计划金额
+        const amount = getPlanAmount(currentPlan);
+        
+        // 构建易支付请求参数
+        const params = {
+            pid: CONFIG.PID,                 // 商户ID
+            type: 'alipay',                  // 支付类型，指定为支付宝
+            out_trade_no: orderNo,           // 商户订单号
+            notify_url: CONFIG.RETURN_URL,   // 异步通知地址
+            return_url: CONFIG.RETURN_URL,   // 同步跳转地址
+            name: `百度上传助手${currentPlan}订阅`, // 商品名称
+            money: amount.toFixed(2),        // 金额，保留两位小数
+            sign_type: 'MD5',                // 签名类型
+            param: JSON.stringify({          // 业务扩展参数
+                machineId,
+                plan: currentPlan,
+                planDays: getPlanDays(currentPlan)
+            })
         };
         
-        // 发送创建订单请求
-        const response = await fetch(`${CONFIG.API_URL}/create-order`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(orderData)
-        });
+        // 生成签名
+        params.sign = generateSign(params);
         
-        const result = await response.json();
+        // 构建完整支付URL - 使用submit.php接口
+        const payUrl = `${CONFIG.API_URL}/submit.php?${new URLSearchParams(params).toString()}`;
         
-        if (result.code === 200) {
-            // 保存订单号
-            orderNo = result.data.orderNo;
-            
-            // 启动订单状态检查
-            startOrderCheck();
-            
-            // 打开支付页面
-            window.location.href = result.data.payUrl;
-        } else {
-            showError(`创建订单失败: ${result.message}`);
-            // 返回选择计划页面
-            showSection(elements.paymentSection);
-        }
+        // 打开支付页面
+        window.location.href = payUrl;
     } catch (error) {
         console.error('创建订单请求失败:', error);
         showError('网络错误，请重试');
         // 返回选择计划页面
         showSection(elements.paymentSection);
     }
+}
+
+// 生成订单号
+function generateOrderNo() {
+    const now = new Date();
+    const timestamp = now.getTime().toString().slice(-10);
+    const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    return `BDU${timestamp}${random}`;
+}
+
+// 获取计划对应的金额
+function getPlanAmount(plan) {
+    const prices = {
+        test: 0.1,      // 测试价格
+        monthly: 29.9,  // 月度价格
+        quarterly: 79.9, // 季度价格
+        yearly: 299.9    // 年度价格
+    };
+    return prices[plan] || prices.monthly;
+}
+
+// 获取计划对应的天数
+function getPlanDays(plan) {
+    const days = {
+        test: 1,       // 测试1天
+        monthly: 30,   // 月度30天
+        quarterly: 90, // 季度90天
+        yearly: 365    // 年度365天
+    };
+    return days[plan] || days.monthly;
+}
+
+// 生成签名 - 按照易支付规定的签名算法
+function generateSign(params) {
+    // 按键名ASCII码从小到大排序
+    const keys = Object.keys(params).sort();
+    
+    // 构建待签名字符串
+    let signStr = '';
+    for (const key of keys) {
+        // sign、sign_type、和空值不参与签名
+        if (params[key] && key !== 'sign' && key !== 'sign_type') {
+            signStr += `${key}=${params[key]}&`;
+        }
+    }
+    
+    // 去掉最后一个&符号
+    if (signStr.endsWith('&')) {
+        signStr = signStr.slice(0, -1);
+    }
+    
+    // 添加商户密钥
+    signStr += CONFIG.KEY;
+    
+    console.log('待签名字符串:', signStr);
+    
+    // MD5加密并转小写
+    const sign = md5(signStr);
+    console.log('生成的签名:', sign);
+    return sign;
+}
+
+// MD5函数
+function md5(string) {
+    // 引入外部MD5库
+    if (typeof window.md5 === 'function') {
+        return window.md5(string);
+    }
+    
+    // 如果没有加载MD5库，尝试使用内联实现
+    console.error('MD5库未加载，支付可能会失败');
+    
+    // 简单的哈希函数(仅用于测试，不是真正的MD5)
+    let hash = 0;
+    if (string.length === 0) return hash.toString(16);
+    for (let i = 0; i < string.length; i++) {
+        const char = string.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return Math.abs(hash).toString(16);
 }
 
 // 启动订单状态检查
