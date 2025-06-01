@@ -1,0 +1,433 @@
+/* 基础样式 */
+:root {
+    --primary-color: #4285f4;
+    --primary-dark: #3367d6;
+    --secondary-color: #fbbc05;
+    --success-color: #34a853;
+    --danger-color: #ea4335;
+    --gray-100: #f8f9fa;
+    --gray-200: #e9ecef;
+    --gray-300: #dee2e6;
+    --gray-400: #ced4da;
+    --gray-500: #adb5bd;
+    --gray-600: #6c757d;
+    --gray-700: #495057;
+    --gray-800: #343a40;
+    --gray-900: #212529;
+    --radius: 8px;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    line-height: 1.6;
+    color: var(--gray-800);
+    background-color: var(--gray-100);
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* 容器样式 */
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 头部样式 */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    width: 40px;
+    height: 40px;
+    margin-right: 1rem;
+}
+
+.logo h1 {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.connection-status {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+.disconnected {
+    background-color: var(--danger-color);
+}
+
+.connecting {
+    background-color: var(--secondary-color);
+}
+
+.connected {
+    background-color: var(--success-color);
+}
+
+/* 主要内容区域 */
+main {
+    flex: 1;
+    background-color: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+section {
+    margin-bottom: 2rem;
+}
+
+section h2 {
+    margin-bottom: 1rem;
+    color: var(--gray-800);
+    text-align: center;
+}
+
+.description {
+    text-align: center;
+    color: var(--gray-600);
+    margin-bottom: 2rem;
+}
+
+/* 订阅计划卡片 */
+.subscription-plans {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.plan {
+    background-color: white;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    flex: 1;
+    min-width: 250px;
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition);
+    position: relative;
+}
+
+.plan:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.popular {
+    border-color: var(--primary-color);
+    box-shadow: 0 6px 12px rgba(66, 133, 244, 0.15);
+}
+
+.popular-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.plan-header {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.plan-header h3 {
+    margin-bottom: 0.5rem;
+    color: var(--gray-800);
+}
+
+.price {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.price-note {
+    font-size: 0.85rem;
+    color: var(--success-color);
+    margin-top: 0.25rem;
+}
+
+.plan-features {
+    flex: 1;
+    margin-bottom: 1.5rem;
+}
+
+.plan-features ul {
+    list-style: none;
+}
+
+.plan-features li {
+    margin-bottom: 0.75rem;
+    color: var(--gray-700);
+}
+
+.plan-features i {
+    color: var(--success-color);
+    margin-right: 0.5rem;
+}
+
+.select-plan-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    width: 100%;
+}
+
+.select-plan-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+/* 支付备注 */
+.payment-note {
+    text-align: center;
+    color: var(--gray-600);
+    font-size: 0.9rem;
+    margin-top: 2rem;
+}
+
+.payment-note p {
+    margin-bottom: 0.5rem;
+}
+
+.payment-note i {
+    margin-right: 0.5rem;
+}
+
+/* 确认区域 */
+.confirm-section {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.confirm-details {
+    background-color: var(--gray-100);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.confirm-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--gray-300);
+}
+
+.confirm-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.confirm-label {
+    color: var(--gray-600);
+}
+
+.confirm-value {
+    font-weight: bold;
+    color: var(--gray-800);
+}
+
+.confirm-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.back-btn {
+    background-color: var(--gray-200);
+    color: var(--gray-700);
+    border: none;
+    border-radius: var(--radius);
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    flex: 1;
+}
+
+.back-btn:hover {
+    background-color: var(--gray-300);
+}
+
+.pay-btn {
+    background-color: var(--success-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    flex: 2;
+}
+
+.pay-btn:hover {
+    background-color: #2d9249;
+}
+
+/* 加载区域 */
+.loading-section {
+    text-align: center;
+    padding: 3rem 0;
+}
+
+.loader {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border: 5px solid var(--gray-200);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin 1s linear infinite;
+    margin-bottom: 1.5rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-text {
+    color: var(--gray-700);
+}
+
+/* 成功区域 */
+.success-section {
+    text-align: center;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.success-icon {
+    font-size: 5rem;
+    color: var(--success-color);
+    margin-bottom: 1.5rem;
+}
+
+.success-message {
+    font-size: 1.2rem;
+    color: var(--gray-700);
+    margin-bottom: 2rem;
+}
+
+.activation-details {
+    background-color: var(--gray-100);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.activation-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--gray-300);
+}
+
+.activation-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.activation-label {
+    color: var(--gray-600);
+}
+
+.activation-value {
+    font-weight: bold;
+    color: var(--gray-800);
+}
+
+.note {
+    color: var(--gray-600);
+    font-size: 0.9rem;
+}
+
+/* 页脚样式 */
+footer {
+    text-align: center;
+    color: var(--gray-600);
+    font-size: 0.9rem;
+}
+
+/* 工具类 */
+.hidden {
+    display: none;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    main {
+        padding: 1.5rem;
+    }
+    
+    .subscription-plans {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .plan {
+        max-width: 100%;
+        width: 100%;
+    }
+} 

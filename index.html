@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>百度上传助手 - 订阅激活</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- 引入图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <img src="logo.png" alt="百度上传助手" id="logo-img">
+                <h1>百度上传助手</h1>
+            </div>
+            <div class="connection-status" id="connection-status">
+                <span class="status-dot disconnected"></span>
+                <span class="status-text">未连接</span>
+            </div>
+        </header>
+
+        <main>
+            <section class="payment-section" id="payment-section">
+                <h2>选择订阅计划</h2>
+                <p class="description">请选择适合您的订阅计划，完成支付后将自动激活软件</p>
+
+                <div class="subscription-plans">
+                    <div class="plan" data-plan="monthly">
+                        <div class="plan-header">
+                            <h3>月度订阅</h3>
+                            <div class="price">¥29.9</div>
+                        </div>
+                        <div class="plan-features">
+                            <ul>
+                                <li><i class="fas fa-check"></i> 有效期30天</li>
+                                <li><i class="fas fa-check"></i> 所有高级功能</li>
+                                <li><i class="fas fa-check"></i> 无限上传次数</li>
+                                <li><i class="fas fa-check"></i> 免费技术支持</li>
+                            </ul>
+                        </div>
+                        <button class="select-plan-btn" data-plan="monthly">选择</button>
+                    </div>
+
+                    <div class="plan popular" data-plan="quarterly">
+                        <div class="popular-badge">推荐</div>
+                        <div class="plan-header">
+                            <h3>季度订阅</h3>
+                            <div class="price">¥79.9</div>
+                            <div class="price-note">省¥10</div>
+                        </div>
+                        <div class="plan-features">
+                            <ul>
+                                <li><i class="fas fa-check"></i> 有效期90天</li>
+                                <li><i class="fas fa-check"></i> 所有高级功能</li>
+                                <li><i class="fas fa-check"></i> 无限上传次数</li>
+                                <li><i class="fas fa-check"></i> 优先技术支持</li>
+                            </ul>
+                        </div>
+                        <button class="select-plan-btn" data-plan="quarterly">选择</button>
+                    </div>
+
+                    <div class="plan" data-plan="yearly">
+                        <div class="plan-header">
+                            <h3>年度订阅</h3>
+                            <div class="price">¥299.9</div>
+                            <div class="price-note">省¥60</div>
+                        </div>
+                        <div class="plan-features">
+                            <ul>
+                                <li><i class="fas fa-check"></i> 有效期365天</li>
+                                <li><i class="fas fa-check"></i> 所有高级功能</li>
+                                <li><i class="fas fa-check"></i> 无限上传次数</li>
+                                <li><i class="fas fa-check"></i> VIP技术支持</li>
+                            </ul>
+                        </div>
+                        <button class="select-plan-btn" data-plan="yearly">选择</button>
+                    </div>
+                </div>
+
+                <div class="payment-note">
+                    <p><i class="fas fa-shield-alt"></i> 安全支付保障，支持支付宝、微信等多种支付方式</p>
+                    <p><i class="fas fa-sync"></i> 支付完成后自动激活软件，无需手动输入激活码</p>
+                </div>
+            </section>
+
+            <section class="confirm-section hidden" id="confirm-section">
+                <h2>确认订阅信息</h2>
+                <div class="confirm-details">
+                    <div class="confirm-item">
+                        <span class="confirm-label">订阅计划:</span>
+                        <span class="confirm-value" id="confirm-plan">月度订阅</span>
+                    </div>
+                    <div class="confirm-item">
+                        <span class="confirm-label">价格:</span>
+                        <span class="confirm-value" id="confirm-price">¥29.9</span>
+                    </div>
+                    <div class="confirm-item">
+                        <span class="confirm-label">机器ID:</span>
+                        <span class="confirm-value" id="confirm-machine-id">...</span>
+                    </div>
+                </div>
+                <div class="confirm-buttons">
+                    <button class="back-btn" id="back-to-plans-btn">返回</button>
+                    <button class="pay-btn" id="confirm-pay-btn">立即支付</button>
+                </div>
+            </section>
+
+            <section class="loading-section hidden" id="loading-section">
+                <div class="loader"></div>
+                <p class="loading-text" id="loading-text">正在创建支付订单...</p>
+            </section>
+
+            <section class="success-section hidden" id="success-section">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2>支付成功</h2>
+                <p class="success-message">您的软件已成功激活！</p>
+                <div class="activation-details">
+                    <div class="activation-item">
+                        <span class="activation-label">订阅计划:</span>
+                        <span class="activation-value" id="success-plan">月度订阅</span>
+                    </div>
+                    <div class="activation-item">
+                        <span class="activation-label">有效期至:</span>
+                        <span class="activation-value" id="success-expires">2023-12-31</span>
+                    </div>
+                </div>
+                <p class="note">您可以关闭此页面并继续使用软件</p>
+            </section>
+        </main>
+
+        <footer>
+            <p>© 2023 百度上传助手 | <a href="#" id="contact-support">联系支持</a></p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
